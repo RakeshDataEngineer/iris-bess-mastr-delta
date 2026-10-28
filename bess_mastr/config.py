@@ -68,10 +68,10 @@ class ScopeConfig:
         "pump", "druckluft", "schwungrad", "wasserstoff", "kondensator",
         "supraleit", "waerme", "wärme",
     )
-    # Numeric technology codes used in the bulk XML export. Verify against the
-    # MaStR "Katalogwerte" file before relying on them (see README).
+    # MaStR catalogue codes for storage technology, confirmed on live data
+    # (Stromspeichertechnologie: 524 = Batterie, 1537 = Pumpspeicher).
     battery_technology_codes: tuple[str, ...] = ("524",)
-    non_battery_technology_codes: tuple[str, ...] = ()
+    non_battery_technology_codes: tuple[str, ...] = ("1537",)
     max_plausible_mw: Decimal = Decimal("2000")
     min_plausible_duration_h: Decimal = Decimal("0.25")
     max_plausible_duration_h: Decimal = Decimal("12")

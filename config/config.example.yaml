@@ -12,7 +12,7 @@ db:
 
 source:
   base_url: https://www.marktstammdatenregister.de/MaStR/Einheit/EinheitJson/GetErweiterteOeffentlicheEinheitStromerzeugung
-  energietraeger_code: "2496"        # Speicher (storage) - verify on first live run, see README
+  energietraeger_code: "2496"        # Speicher (storage) - confirmed on live data
   candidate_floor_kw: 1000           # pre-filter below the 10 MW scope to detect LEFT_SCOPE
   power_filter_field: Nettonennleistung der Einheit
   carrier_filter_field: Energieträger
@@ -35,4 +35,5 @@ scope:
   max_plausible_mw: 2000
   min_plausible_duration_h: 0.25
   max_plausible_duration_h: 12
-  battery_technology_codes: ["524"]  # bulk XML code for "Batterie" - verify against Katalogwerte
+  battery_technology_codes: ["524"]      # Stromspeichertechnologie "Batterie" (confirmed on live data)
+  non_battery_technology_codes: ["1537"] # "Pumpspeicher" (confirmed on live data)

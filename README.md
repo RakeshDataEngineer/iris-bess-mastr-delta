@@ -25,7 +25,7 @@ MaStR bulk XML export  ───┘   (immutable pages  (Decimal units,  (per   
 ```bash
 cp .env.example .env                    # local throw-away password only
 docker compose up -d postgres
-docker compose run --rm tests           # 82 tests incl. PostgreSQL integration test
+docker compose run --rm tests           # 87 tests incl. PostgreSQL integration test
 docker compose run --rm demo            # replay synthetic fixtures 3x -> shows idempotency
 docker compose run --rm pipeline        # LIVE incremental pull from MaStR -> iris_staging
 ```
@@ -104,24 +104,24 @@ Units: MaStR reports power in **kW** and usable storage capacity in **kWh**. Bot
 | `mastr_id` | `MaStRNummer` | `EinheitMastrNummer` | trim, upper; must match `^SEE\d{12}$` else rejected |
 | `unit_name` | `EinheitName` | `NameStromerzeugungseinheit` | trim |
 | `operator_name` | `AnlagenbetreiberName` | - | trim (MaStR anonymises natural persons) |
-| `storage_mastr_id` | `SpeMastrNummer` | `SpeMastrNummer` | link unit → storage installation |
+| `storage_mastr_id` | `SpeicherEinheitMastrNummer` | `SpeMastrNummer` | link unit → storage installation |
 | `energy_carrier` | `EnergietraegerName` | `Energietraeger` (code `2496`) | must be "Speicher"/2496 to be in scope |
-| `storage_technology`, `is_battery` | `TechnologieName` / `Batterietechnologie*` | `Technologie` (code) | keyword/code classification; pumped hydro, compressed air, flywheel, hydrogen → not battery |
+| `storage_technology`, `is_battery` | `StromspeichertechnologieBezeichnung` ("Batterie", "Pumpspeicher", …) + `Stromspeichertechnologie` (code 524 = Batterie, 1537 = Pumpspeicher) + `Batterietechnologie` (chemistry code) | `Technologie` (code) | label/code classification; pumped hydro, compressed air, flywheel, hydrogen → not battery |
 | `net_power_mw` | `Nettonennleistung` (kW) | `Nettonennleistung` (kW) | ÷1000, Decimal |
 | `gross_power_mw` | `Bruttoleistung` (kW) | `Bruttoleistung` (kW) | ÷1000, Decimal |
 | `scope_power_mw`, `power_basis` | | | net power; falls back to gross (flag `POWER_FROM_GROSS`) |
-| `usable_capacity_mwh` | `NutzbareSpeicherkapazitaet` (kWh)* | `AnlagenStromSpeicher.NutzbareSpeicherkapazitaet` via `SpeMastrNummer` | ÷1000 |
+| `usable_capacity_mwh` | `NutzbareSpeicherkapazitaet` (kWh) | `AnlagenStromSpeicher.NutzbareSpeicherkapazitaet` via `SpeMastrNummer` | ÷1000 |
 | `duration_h` | | | MWh ÷ MW, flagged outside 0.25-12 h |
 | `status`, `status_code` | `BetriebsStatusId` / `BetriebsStatusName` | `EinheitBetriebsstatus` | 31 planned · 35 operating · 37 temporarily_shut_down · 38 permanently_shut_down |
-| `commissioning_date` / `planned_commissioning_date` / `registration_date` | `InbetriebnahmeDatum` / `GeplantesInbetriebnahmeDatum` / `EinheitMeldeDatum` | `Inbetriebnahmedatum` / … / `Registrierungsdatum` | `/Date(ms)/`, ISO-8601 (incl. 7-digit .NET fractions), `dd.mm.yyyy` → UTC |
+| `commissioning_date` / `planned_commissioning_date` / `registration_date` | `InbetriebnahmeDatum` / `GeplantesInbetriebsnahmeDatum` (sic) / `EinheitRegistrierungsdatum` | `Inbetriebnahmedatum` / … / `Registrierungsdatum` | `/Date(ms)/`, ISO-8601 (incl. 7-digit .NET fractions), `dd.mm.yyyy` → UTC |
 | `source_updated_at` | `DatumLetzteAktualisierung` | `DatumLetzteAktualisierung` | → timezone-aware UTC; drives the watermark |
-| `postal_code`, `city`, `federal_state`, `municipality_key` | `Plz`, `Ort`, `BundeslandName`, `Gemeindeschluessel` | `Postleitzahl`, `Ort`, `Bundesland` (code), `Gemeindeschluessel` | trim |
+| `postal_code`, `city`, `federal_state`, `municipality_key` | `Plz`, `Ort`, `Bundesland`, `Gemeindeschluessel` | `Postleitzahl`, `Ort`, `Bundesland` (code), `Gemeindeschluessel` | trim |
 | `latitude`, `longitude`, `location_quality`, `geometry_wkt` | `Breitengrad`, `Laengengrad` | same | WGS84 (EPSG:4326), 6 dp; `ok` / `missing` / `out_of_bounds` (outside a DE bounding box); WKT only when `ok` |
 | `in_scope`, `scope_reason` | | | storage ∧ battery (or unknown technology, configurable) ∧ `scope_power_mw > 10` |
 | `quality_flags` | | | comma-separated, see §5 |
 | `data_origin` | | | `observed` / `fixture` |
 
-\* see limitation L3.
+Field names on the JSON side were verified against live MaStR records on 2026-10-28 (see `tests/test_live_shape.py`).
 
 ### Delta semantics (`iris_staging.bess_pipeline_deltas`)
 
@@ -150,7 +150,7 @@ Principle: reject only when the record cannot be identified or its scope cannot 
 
 ## 6. Tests and evidence
 
-`pytest` → **81 passed, 1 skipped** on SQLite (the skipped one is the PostgreSQL integration test, which runs inside `docker compose run --rm tests`).
+`pytest` → **86 passed, 1 skipped** on SQLite (the skipped one is the PostgreSQL integration test, which runs inside `docker compose run --rm tests`).
 
 | File | Covers |
 |---|---|
@@ -158,6 +158,7 @@ Principle: reject only when the record cannot be identified or its scope cannot 
 | `tests/test_normalize.py` | rejections (missing/invalid ID, malformed/negative/implausible power), threshold boundary, gross fallback, non-battery storage, flags for location/capacity/status/timestamps, hash stability across units |
 | `tests/test_pipeline.py` | NEW on first load; CHANGED/ENTERED_SCOPE/LEFT_SCOPE/NEW on second; **idempotency over repeated and out-of-order replays**; no data loss; monotonic watermark; origin labels; bulk XML (UTF-8 and UTF-16) with MWh join; `iris_core` refusal; config guards |
 | `tests/test_extractor_http.py` | mocked MaStR: filter string, paging, landing + manifest, incremental filter with overlap, replay of a landed live run, retry on 503/429, give-up → failed run with no deltas and no watermark, malformed bodies, 404, crash mid-write → full rollback |
+| `tests/test_live_shape.py` | records with the exact live MaStR field names: battery vs pumped hydro by label and by code, MWh, planned/registration dates, negative-epoch dates |
 | `tests/test_postgres_integration.py` | same scenario end-to-end on PostgreSQL in a throw-away schema |
 
 Fixtures (`tests/fixtures/`, regenerated by `scripts/make_fixtures.py`) are **synthetic**: IDs `SEE9000000000xx`, names prefixed `FIXTURE`.
@@ -168,9 +169,9 @@ Fixtures (`tests/fixtures/`, regenerated by `scripts/make_fixtures.py`) are **sy
 
 ## 7. Assumptions and limitations
 
-* **L1 - Live source not exercised from the development sandbox.** `www.marktstammdatenregister.de` was not reachable from the environment this was built in, so live mode is verified against a mocked endpoint that reproduces the documented response shape (`Data`/`Total`/`Errors`, `/Date()/` timestamps, kW values). On the first real run, check the items below; all are config values, not code changes.
-* **L2 - Catalogue values.** `Energietraeger = 2496` (Speicher) and the bulk technology code `524` (Batterie) come from the MaStR catalogue as I understand it; verify against the "Katalogwerte" in the bulk export. Filter column labels (`Datum der letzten Aktualisierung`, …) must match the public UI's labels.
-* **L3 - MWh on the JSON table.** The public table may not expose usable capacity for every unit. The normaliser accepts several field names; if none is present the record is kept with `CAPACITY_MISSING`. The bulk mode joins `AnlagenStromSpeicher` and is the authoritative MWh source.
+* **L1 - Live verification.** Live mode was run against the real MaStR endpoint on 2026-10-28 (see `QUALITY_REPORT.md` §5). The first live run revealed that technology lives in `Stromspeichertechnologie*`, not in the initially assumed field names; the mapping was fixed and covered by `tests/test_live_shape.py`. Automated tests use a mocked endpoint so they run offline.
+* **L2 - Incremental date filter.** The server returned the full candidate set even with the `Datum der letzten Aktualisierung` clause, i.e. that filter label is not honoured. Correctness is unaffected (unchanged records are skipped by hash), but each run pulls the full >1 MW storage set (~1.3k records, ~20 s). Fix once the exact UI column label is confirmed: `source.updated_filter_field`.
+* **L3 - MWh.** `NutzbareSpeicherkapazitaet` (kWh) is present on the public table for the observed population; the bulk mode joins `AnlagenStromSpeicher` as an alternative source.
 * **L4 - The JSON endpoint is the backend of the public web UI, not a versioned API.** It can change without notice; the bulk export is the stable, documented fallback and is implemented.
 * **L5 - Deletions.** MaStR units are not deleted but decommissioned (status 38, captured as `CHANGED`). Incremental mode cannot see units that stop being returned; a periodic `--full-refresh` or bulk run covers that.
 * **L6 - Technology unknown.** Storage units > 10 MW without technology information are included by default (flag `TECHNOLOGY_UNKNOWN`); set `include_unknown_technology: false` to exclude them.
@@ -188,7 +189,7 @@ bess_mastr/            config, units, normalize, models, store, pipeline, report
 bess_mastr/sources/    mastr_json (live), mastr_bulk_xml, landing (raw page store / replay)
 config/                config.example.yaml
 sql/                   validation_queries.sql
-scripts/               demo.sh, generate_examples.sh, make_fixtures.py, validate.py
+scripts/               demo.sh, generate_examples.sh, live_evidence.sh, make_fixtures.py, validate.py
 tests/                 unit, pipeline, mocked-HTTP and PostgreSQL tests + synthetic fixtures
 examples/              illustrative outputs on fixtures
 docker/initdb/         creates schema iris_staging only

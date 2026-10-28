@@ -30,7 +30,7 @@ FIELD_ALIASES: dict[str, tuple[str, ...]] = {
     "mastr_id": ("MaStRNummer", "EinheitMastrNummer"),
     "unit_name": ("EinheitName", "NameStromerzeugungseinheit"),
     "operator_name": ("AnlagenbetreiberName",),
-    "storage_mastr_id": ("SpeMastrNummer", "SpeicherMaStRNummer"),
+    "storage_mastr_id": ("SpeicherEinheitMastrNummer", "SpeMastrNummer", "SpeicherMaStRNummer"),
     "energy_carrier": ("EnergietraegerName", "Energietraeger"),
     "net_power": ("Nettonennleistung",),
     "gross_power": ("Bruttoleistung",),
@@ -42,8 +42,10 @@ FIELD_ALIASES: dict[str, tuple[str, ...]] = {
     "status_id": ("BetriebsStatusId", "EinheitBetriebsstatus"),
     "status_name": ("BetriebsStatusName",),
     "commissioning": ("InbetriebnahmeDatum", "Inbetriebnahmedatum"),
-    "planned_commissioning": ("GeplantesInbetriebnahmeDatum", "GeplantesInbetriebnahmedatum"),
-    "registration": ("EinheitMeldeDatum", "Registrierungsdatum"),
+    # sic: the public table spells it "Inbetriebsnahme"
+    "planned_commissioning": ("GeplantesInbetriebsnahmeDatum", "GeplantesInbetriebnahmeDatum",
+                              "GeplantesInbetriebnahmedatum"),
+    "registration": ("EinheitRegistrierungsdatum", "EinheitMeldeDatum", "Registrierungsdatum"),
     "updated": ("DatumLetzteAktualisierung",),
     "postal_code": ("Plz", "Postleitzahl"),
     "city": ("Ort",),
@@ -52,7 +54,12 @@ FIELD_ALIASES: dict[str, tuple[str, ...]] = {
     "latitude": ("Breitengrad",),
     "longitude": ("Laengengrad",),
 }
+# Order matters only for display. Verified against live MaStR records
+# (2026-10-28): the public table returns Stromspeichertechnologie (code,
+# 524 = Batterie, 1537 = Pumpspeicher) and StromspeichertechnologieBezeichnung
+# (label); Batterietechnologie is a battery-chemistry code (e.g. 727).
 TECHNOLOGY_FIELDS = (
+    "StromspeichertechnologieBezeichnung", "Stromspeichertechnologie",
     "TechnologieName", "Technologie", "TechnologieDerStromspeicherung",
     "BatterietechnologieName", "Batterietechnologie",
 )

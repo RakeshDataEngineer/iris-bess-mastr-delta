@@ -70,7 +70,7 @@ End state: 8 in-scope projects, 188.5005 MW; all 5 validation gates pass.
 
 ## 4. Known gaps
 
-1. **No observational run yet.** The MaStR host was blocked from the build sandbox; live mode is proven against a faithful mock only. First live run checklist: confirm `2496` = Speicher, the filter labels, and which capacity/technology fields the *Erweiterte* table returns (README L1-L3). Expected first-run signals: `TECHNOLOGY_UNKNOWN` or `CAPACITY_MISSING` rates near 100 % mean a field name needs adding to `FIELD_ALIASES`.
+1. **Incremental date filter not honoured by the server** (see §5); runs are correct but pull the full >1 MW storage set.
 2. **MWh completeness** depends on the source; use `--mode bulk` for authoritative capacity.
 3. **Disappearing units** are only detectable with a full refresh / bulk run.
 4. **Bundesland codes** from the bulk export are not decoded.
@@ -78,6 +78,8 @@ End state: 8 in-scope projects, 188.5005 MW; all 5 validation gates pass.
 
 ## 5. Observed live runs (MaStR, 2026-10-28)
 
-- **Run 1 (initial, no watermark):** 3 pages, 1,337 storage units > 1 MW returned (`Total` = 1337), **334 battery projects > 10 MW staged as NEW**, 0 rejected. See `examples/quality_report_live_run1.md`, `examples/live_bess_pipeline_deltas.csv`, `examples/live_validation_query_results.txt`.
-- **Run 2 (incremental, `since_filter` = 25.10.2026):** all 1,337 records unchanged, **0 deltas**, 0 rejected, 0 stale. This confirms idempotency on observational data. See `examples/quality_report_live_run2.md`.
-- **Finding:** run 2 still returned `Total` = 1337, so the server ignored the date clause of the filter (the UI column label probably differs from `Datum der letzten Aktualisierung`). Correctness is unaffected because unchanged records are detected by hash and skipped; the cost is a full pull of about 1.3k records (about 20 s). Fix: confirm the column label in the MaStR web UI filter and set `source.updated_filter_field` in the config.
+**First attempt - and what it caught.** The first live run (3 pages, 1,337 storage units > 1 MW, 0 rejected, all validation gates passed) flagged **all 334** in-scope units `TECHNOLOGY_UNKNOWN`. The quality report made the cause visible: the public table carries technology in `Stromspeichertechnologie` / `StromspeichertechnologieBezeichnung` (e.g. "Pumpspeicher" for *PSW Hohenwarte 2*), which the mapping did not yet read, so pumped hydro was being counted as battery storage (inflated MW totals, 95 `DURATION_IMPLAUSIBLE` flags). The mapping was corrected (plus `SpeicherEinheitMastrNummer`, `EinheitRegistrierungsdatum`, `GeplantesInbetriebsnahmeDatum`), live-shaped tests were added (`tests/test_live_shape.py`), and the observed evidence below was regenerated on a fresh staging DB with `scripts/live_evidence.sh`.
+
+**Regenerated evidence:** `examples/quality_report_live_run1.md` (initial run), `examples/quality_report_live_run2.md` (incremental re-run), `examples/live_bess_pipeline_deltas.csv`, `examples/live_validation_query_results.txt`.
+
+**Finding - incremental date filter:** the incremental run still returned `Total` = 1,337, so the server ignores the `Datum der letzten Aktualisierung` clause (label mismatch). Correctness is unaffected because unchanged records are detected by hash and skipped (the re-run produced 0 deltas); the cost is a full pull of ~1.3k records (~20 s). Fix: confirm the UI column label and set `source.updated_filter_field`.
