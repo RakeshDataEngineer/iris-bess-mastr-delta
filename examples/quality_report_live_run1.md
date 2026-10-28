@@ -1,8 +1,8 @@
-# Quality report - run `20261028T124554Z-31d027`
+# Quality report - run `20261028T133051Z-2b01fd`
 
 **Data origin: OBSERVED (live MaStR extraction).**
 
-Mode `live`, status **success**, generated 2026-10-28T12:46:17.068825+00:00.
+Mode `live`, status **success**, generated 2026-10-28T13:31:10.957181+00:00.
 
 ## This run
 
@@ -16,7 +16,7 @@ Mode `live`, status **success**, generated 2026-10-28T12:46:17.068825+00:00.
 | conflicting duplicates superseded | 0 |
 | stale (older than stored) skipped | 0 |
 | unchanged | 0 |
-| deltas written | 334 {'NEW': 334} |
+| deltas written | 232 {'NEW': 232} |
 | since filter / watermark after | None / 2026-10-27T18:12:29.358000+00:00 |
 
 Rejections this run: none
@@ -25,23 +25,23 @@ Rejections this run: none
 
 | metric | value |
 |---|---|
-| in_scope_projects | 334 |
-| total_power_mw | 23366.361 |
-| total_capacity_mwh_known | 2556973.99798 |
+| in_scope_projects | 232 |
+| total_power_mw | 13381.761 |
+| total_capacity_mwh_known | 37077.59798 |
 | with_capacity_mwh | 100.0% |
-| with_valid_coordinates | 97.9% |
+| with_valid_coordinates | 99.1% |
 | with_net_power_basis | 100.0% |
-| technology_verified_battery | 0.0% |
+| technology_verified_battery | 100.0% |
 
-By status: {'operating': 207, 'permanently_shut_down': 5, 'planned': 122}
+By status: {'operating': 110, 'planned': 122}
 
-By federal state: {'Baden-Württemberg': 30, 'Bayern': 61, 'Brandenburg': 20, 'Bremen': 2, 'Hessen': 13, 'Mecklenburg-Vorpommern': 13, 'Niedersachsen': 21, 'Nordrhein-Westfalen': 29, 'Rheinland-Pfalz': 10, 'Saarland': 4, 'Sachsen': 29, 'Sachsen-Anhalt': 31, 'Schleswig-Holstein': 16, 'Thüringen': 27, 'unknown': 28}
+By federal state: {'Baden-Württemberg': 7, 'Bayern': 48, 'Brandenburg': 20, 'Bremen': 2, 'Hessen': 8, 'Mecklenburg-Vorpommern': 13, 'Niedersachsen': 20, 'Nordrhein-Westfalen': 26, 'Rheinland-Pfalz': 10, 'Saarland': 4, 'Sachsen': 21, 'Sachsen-Anhalt': 29, 'Schleswig-Holstein': 13, 'Thüringen': 11}
 
-Quality flags (in-scope): {'DURATION_IMPLAUSIBLE': 95, 'LOCATION_MISSING': 2, 'LOCATION_OUT_OF_BOUNDS': 5, 'TECHNOLOGY_UNKNOWN': 334}
+Quality flags (in-scope): {'DURATION_IMPLAUSIBLE': 1, 'LOCATION_MISSING': 2}
 
 ## Acceptance checks
 
 - duplicate delta transitions (must be 0): **0**
 - in-scope rows with power <= threshold (must be 0): **0**
-- deltas all-time: {'NEW': 334}
+- deltas all-time: {'NEW': 232}
 - rejections all-time: {}

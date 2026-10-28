@@ -83,3 +83,5 @@ End state: 8 in-scope projects, 188.5005 MW; all 5 validation gates pass.
 **Regenerated evidence:** `examples/quality_report_live_run1.md` (initial run), `examples/quality_report_live_run2.md` (incremental re-run), `examples/live_bess_pipeline_deltas.csv`, `examples/live_validation_query_results.txt`.
 
 **Finding - incremental date filter:** the incremental run still returned `Total` = 1,337, so the server ignores the `Datum der letzten Aktualisierung` clause (label mismatch). Correctness is unaffected because unchanged records are detected by hash and skipped (the re-run produced 0 deltas); the cost is a full pull of ~1.3k records (~20 s). Fix: confirm the UI column label and set `source.updated_filter_field`.
+
+**Result after the fix (fresh staging DB, 2026-10-28):** run 1 staged **232 battery projects > 10 MW** (13,381.761 MW total), all `NEW`, 0 rejected, technology verified as battery for **100 %**; only 3 quality flags remain (2 `LOCATION_MISSING`, 1 `DURATION_IMPLAUSIBLE`). Run 2 saw all 1,337 candidates unchanged and wrote **0 deltas**. All validation gates pass.
