@@ -75,3 +75,9 @@ End state: 8 in-scope projects, 188.5005 MW; all 5 validation gates pass.
 3. **Disappearing units** are only detectable with a full refresh / bulk run.
 4. **Bundesland codes** from the bulk export are not decoded.
 5. **PostgreSQL path** is covered by `tests/test_postgres_integration.py`, which runs in `docker compose run --rm tests`.
+
+## 5. Observed live runs (MaStR, 2026-10-28)
+
+- **Run 1 (initial, no watermark):** 3 pages, 1,337 storage units > 1 MW returned (`Total` = 1337), **334 battery projects > 10 MW staged as NEW**, 0 rejected. See `examples/quality_report_live_run1.md`, `examples/live_bess_pipeline_deltas.csv`, `examples/live_validation_query_results.txt`.
+- **Run 2 (incremental, `since_filter` = 25.10.2026):** all 1,337 records unchanged, **0 deltas**, 0 rejected, 0 stale. This confirms idempotency on observational data. See `examples/quality_report_live_run2.md`.
+- **Finding:** run 2 still returned `Total` = 1337, so the server ignored the date clause of the filter (the UI column label probably differs from `Datum der letzten Aktualisierung`). Correctness is unaffected because unchanged records are detected by hash and skipped; the cost is a full pull of about 1.3k records (about 20 s). Fix: confirm the column label in the MaStR web UI filter and set `source.updated_filter_field` in the config.
