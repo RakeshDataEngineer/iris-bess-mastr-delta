@@ -1,0 +1,68 @@
+
+== result_large_batteries_current
+mastr_id | unit_name | scope_power_mw | power_basis | usable_capacity_mwh | duration_h | status | federal_state | latitude | longitude | quality_flags | data_origin
+SEE900000000001 | FIXTURE BESS Alpha | 50 | net | 120 | 2.4 | operating | Brandenburg | 52.4 | 13.1 |  | fixture
+SEE900000000016 | FIXTURE BESS Papa new | 45 | net | 90 | 2 | planned | Brandenburg | 52.4 | 13.1 |  | fixture
+SEE900000000002 | FIXTURE BESS Beta exactly 10 MW | 25 | net | 50 | 2 | operating | Brandenburg | 52.4 | 13.1 |  | fixture
+SEE900000000013 | FIXTURE BESS Mike unknown tech | 20 | net | 40 | 2 | operating | Brandenburg | 52.4 | 13.1 | TECHNOLOGY_UNKNOWN | fixture
+SEE900000000010 | FIXTURE BESS Juliet gross only | 15 | gross | 30 | 2 | operating | Brandenburg | 52.4 | 13.1 | POWER_FROM_GROSS | fixture
+SEE900000000003 | FIXTURE BESS Gamma planned | 12.5 | net | 25 | 2 | operating | Brandenburg | 52.4 | 13.1 |  | fixture
+SEE900000000014 | FIXTURE BESS November null island | 11 | net | 22 | 2 | operating | Bayern | 0 | 0 | LOCATION_OUT_OF_BOUNDS | fixture
+SEE900000000005 | FIXTURE BESS Epsilon german string | 10.0005 | net | 20.001 | 2 | operating | Brandenburg | 52.4 | 13.1 |  | fixture
+
+== deltas_by_run_and_type
+run_id | change_type | n
+ex-r1 | NEW | 7
+ex-r2 | CHANGED | 2
+ex-r2 | ENTERED_SCOPE | 1
+ex-r2 | LEFT_SCOPE | 1
+ex-r2 | NEW | 1
+
+== change_history_example
+run_id | mastr_id | change_type | changed_fields
+ex-r1 | SEE900000000001 | NEW | 
+ex-r2 | SEE900000000001 | CHANGED | {"usable_capacity_mwh": {"new": "120", "old": "100"}}
+ex-r1 | SEE900000000003 | NEW | 
+ex-r2 | SEE900000000003 | CHANGED | {"commissioning_date": {"new": "2026-09-20", "old": null}, "status": {"new": "operating", "old": "planned"}, "status_code": {"new": "35", "old": "31"}, "usable_capacity_mwh": {"new": "25", "old": null}}
+
+== gate_in_scope_at_or_below_threshold  (expect 0)
+violations
+0
+PASS
+
+== gate_out_of_scope_above_threshold_battery  (expect 0)
+violations
+0
+PASS
+
+== gate_duplicate_transitions  (expect 0)
+violations
+0
+PASS
+
+== gate_current_state_traceable_to_delta  (expect 0)
+violations
+0
+PASS
+
+== gate_duplicate_mastr_ids_in_current  (expect 0)
+violations
+0
+PASS
+
+== rejected_by_reason
+reason_code | n
+DUPLICATE_SUPERSEDED | 1
+IMPLAUSIBLE_POWER | 1
+INVALID_MASTR_ID | 1
+MALFORMED_POWER | 1
+MISSING_MASTR_ID | 1
+
+== run_log
+run_id | mode | status | data_origin | records_seen | records_valid | records_rejected | duplicates_in_batch | stale_skipped | unchanged | deltas_written | watermark_after
+ex-r1 | replay | success | fixture | 15 | 10 | 4 | 1 | 0 | 0 | 7 | 2026-09-05T00:00:00+00:00
+ex-r2 | replay | success | fixture | 8 | 7 | 0 | 1 | 1 | 1 | 5 | 2026-10-07T00:00:00+00:00
+ex-r3 | replay | success | fixture | 8 | 7 | 0 | 1 | 1 | 6 | 0 | 2026-10-07T00:00:00+00:00
+ex-r4 | replay | success | fixture | 15 | 10 | 4 | 1 | 5 | 5 | 0 | 2026-10-07T00:00:00+00:00
+
+ALL GATES PASSED

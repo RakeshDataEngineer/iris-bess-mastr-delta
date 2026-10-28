@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SYNTHETIC fixture mirroring the structure of the MaStR bulk export. Not real data. -->
+<EinheitenStromSpeicher>
+  <EinheitStromSpeicher>
+    <EinheitMastrNummer>SEE900000000101</EinheitMastrNummer>
+    <NameStromerzeugungseinheit>FIXTURE BULK Battery One</NameStromerzeugungseinheit>
+    <Energietraeger>2496</Energietraeger>
+    <Technologie>524</Technologie>
+    <Nettonennleistung>20000.000</Nettonennleistung>
+    <Bruttoleistung>20500.000</Bruttoleistung>
+    <EinheitBetriebsstatus>35</EinheitBetriebsstatus>
+    <Inbetriebnahmedatum>2024-03-01</Inbetriebnahmedatum>
+    <Registrierungsdatum>2023-11-20</Registrierungsdatum>
+    <DatumLetzteAktualisierung>2026-09-30T08:15:00.0000000</DatumLetzteAktualisierung>
+    <Bundesland>1400</Bundesland>
+    <Postleitzahl>01067</Postleitzahl>
+    <Ort>Fixturedorf</Ort>
+    <Breitengrad>51.05</Breitengrad>
+    <Laengengrad>13.74</Laengengrad>
+    <SpeMastrNummer>SPE900000000101</SpeMastrNummer>
+  </EinheitStromSpeicher>
+  <EinheitStromSpeicher>
+    <EinheitMastrNummer>SEE900000000102</EinheitMastrNummer>
+    <NameStromerzeugungseinheit>FIXTURE BULK Small Home Battery</NameStromerzeugungseinheit>
+    <Energietraeger>2496</Energietraeger>
+    <Technologie>524</Technologie>
+    <Nettonennleistung>10.000</Nettonennleistung>
+    <Bruttoleistung>10.000</Bruttoleistung>
+    <EinheitBetriebsstatus>35</EinheitBetriebsstatus>
+    <DatumLetzteAktualisierung>2026-09-29T10:00:00</DatumLetzteAktualisierung>
+    <SpeMastrNummer>SPE900000000102</SpeMastrNummer>
+  </EinheitStromSpeicher>
+</EinheitenStromSpeicher>

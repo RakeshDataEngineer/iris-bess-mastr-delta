@@ -1,0 +1,47 @@
+# run 1 - snapshot_1 (initial load)
+{
+  "run_id": "ex-r1",
+  "status": "success",
+  "deltas": {
+    "NEW": 7
+  },
+  "rejected": 4,
+  "unchanged": 0,
+  "stale_skipped": 0,
+  "report": "reports/ex-r1"
+}
+# run 2 - snapshot_2 (changes)
+{
+  "run_id": "ex-r2",
+  "status": "success",
+  "deltas": {
+    "CHANGED": 2,
+    "ENTERED_SCOPE": 1,
+    "LEFT_SCOPE": 1,
+    "NEW": 1
+  },
+  "rejected": 0,
+  "unchanged": 1,
+  "stale_skipped": 1,
+  "report": "reports/ex-r2"
+}
+# run 3 - snapshot_2 again
+{
+  "run_id": "ex-r3",
+  "status": "success",
+  "deltas": {},
+  "rejected": 0,
+  "unchanged": 6,
+  "stale_skipped": 1,
+  "report": "reports/ex-r3"
+}
+# run 4 - snapshot_1 again (stale)
+{
+  "run_id": "ex-r4",
+  "status": "success",
+  "deltas": {},
+  "rejected": 4,
+  "unchanged": 5,
+  "stale_skipped": 5,
+  "report": "reports/ex-r4"
+}

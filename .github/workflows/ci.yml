@@ -1,0 +1,29 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: iris
+          POSTGRES_USER: iris_staging_rw
+          POSTGRES_PASSWORD: ci-only
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U iris_staging_rw -d iris"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -v
+        env:
+          IRIS_TEST_PG_URL: postgresql://iris_staging_rw:ci-only@localhost:5432/iris
+      - name: examples are reproducible from fixtures
+        run: |
+          sh scripts/generate_examples.sh
+          git diff --exit-code -- examples/run_log.txt examples/bess_pipeline_deltas.csv examples/validation_query_results.txt

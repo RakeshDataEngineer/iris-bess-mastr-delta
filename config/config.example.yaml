@@ -1,0 +1,38 @@
+# Example configuration - copy to config/config.yaml and adjust.
+# No secrets here: the database URL (with password) comes from IRIS_DB_URL.
+
+data_origin: observed          # "observed" for live MaStR, "fixture" for synthetic replays
+landing_dir: data/landing      # immutable raw pages + manifest.jsonl per run
+reports_dir: reports
+
+db:
+  url: sqlite:///data/iris_staging.sqlite   # overridden by IRIS_DB_URL (postgresql://...)
+  schema: iris_staging                      # iris_core / public are refused
+  deltas_table: bess_pipeline_deltas
+
+source:
+  base_url: https://www.marktstammdatenregister.de/MaStR/Einheit/EinheitJson/GetErweiterteOeffentlicheEinheitStromerzeugung
+  energietraeger_code: "2496"        # Speicher (storage) - verify on first live run, see README
+  candidate_floor_kw: 1000           # pre-filter below the 10 MW scope to detect LEFT_SCOPE
+  power_filter_field: Nettonennleistung der Einheit
+  carrier_filter_field: Energieträger
+  updated_filter_field: Datum der letzten Aktualisierung
+  sort: MaStRNummer-asc
+  page_size: 500
+  max_pages: 400
+  timeout_s: 60
+  max_retries: 4
+  backoff_s: 2
+  request_interval_s: 1.0            # be polite to a public service
+  overlap_days: 2
+  power_unit: kW
+  capacity_unit: kWh
+  number_locale: de
+
+scope:
+  threshold_mw: 10                   # strictly greater than
+  include_unknown_technology: true   # storage >10 MW with no technology info is kept, flagged
+  max_plausible_mw: 2000
+  min_plausible_duration_h: 0.25
+  max_plausible_duration_h: 12
+  battery_technology_codes: ["524"]  # bulk XML code for "Batterie" - verify against Katalogwerte

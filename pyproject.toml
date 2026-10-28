@@ -1,0 +1,10 @@
+[project]
+name = "iris-bess-mastr-delta"
+version = "1.0.0"
+description = "IRIS task 100: MaStR large battery (>10 MW) delta pipeline (staging only)"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

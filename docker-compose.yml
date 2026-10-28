@@ -1,0 +1,60 @@
+# Local, isolated staging stack. Nothing here points at iris_core or production.
+#   docker compose up -d postgres
+#   docker compose run --rm tests                 # unit + Postgres integration tests
+#   docker compose run --rm demo                  # fixture replay -> iris_staging (illustrative)
+#   docker compose run --rm pipeline              # live MaStR incremental pull -> iris_staging
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: iris
+      POSTGRES_USER: iris_staging_rw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env (local value only)}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iris_staging_rw -d iris"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  pipeline:
+    build: .
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"   # write bind mounts as the host user
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      IRIS_DB_URL: postgresql://iris_staging_rw:${POSTGRES_PASSWORD}@postgres:5432/iris
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    command: ["run", "--config", "config/config.example.yaml", "--mode", "live"]
+
+  demo:
+    build: .
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      IRIS_DB_URL: postgresql://iris_staging_rw:${POSTGRES_PASSWORD}@postgres:5432/iris
+      IRIS_DATA_ORIGIN: fixture
+    volumes:
+      - ./reports:/app/reports
+    entrypoint: ["sh", "scripts/demo.sh"]
+
+  tests:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      IRIS_TEST_PG_URL: postgresql://iris_staging_rw:${POSTGRES_PASSWORD}@postgres:5432/iris
+    entrypoint: ["python", "-m", "pytest", "-v"]
+
+volumes:
+  pgdata:

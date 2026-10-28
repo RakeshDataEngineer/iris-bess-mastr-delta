@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SYNTHETIC fixture. Not real data. -->
+<AnlagenStromSpeicher>
+  <AnlageStromSpeicher>
+    <MaStRNummer>SPE900000000101</MaStRNummer>
+    <NutzbareSpeicherkapazitaet>40000.000</NutzbareSpeicherkapazitaet>
+  </AnlageStromSpeicher>
+  <AnlageStromSpeicher>
+    <MaStRNummer>SPE900000000102</MaStRNummer>
+    <NutzbareSpeicherkapazitaet>12.000</NutzbareSpeicherkapazitaet>
+  </AnlageStromSpeicher>
+</AnlagenStromSpeicher>

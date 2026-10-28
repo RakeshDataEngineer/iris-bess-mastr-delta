@@ -1,0 +1,13 @@
+run_id,mastr_id,change_type,unit_name,scope_power_mw,net_power_mw,usable_capacity_mwh,status,federal_state,latitude,longitude,source_updated_at,changed_fields,data_origin
+ex-r1,SEE900000000001,NEW,FIXTURE BESS Alpha,50,50,100,operating,Brandenburg,52.4,13.1,2026-09-01T00:00:00+00:00,,fixture
+ex-r1,SEE900000000003,NEW,FIXTURE BESS Gamma planned,12.5,12.5,,planned,Brandenburg,52.4,13.1,2026-09-01T00:00:00+00:00,,fixture
+ex-r1,SEE900000000005,NEW,FIXTURE BESS Epsilon german string,10.0005,10.0005,20.001,operating,Brandenburg,52.4,13.1,2026-09-01T00:00:00+00:00,,fixture
+ex-r1,SEE900000000010,NEW,FIXTURE BESS Juliet gross only,15,,30,operating,Brandenburg,52.4,13.1,2026-09-01T00:00:00+00:00,,fixture
+ex-r1,SEE900000000011,NEW,FIXTURE BESS Kilo no coords,30,30,60,operating,Brandenburg,,,2026-09-01T00:00:00+00:00,,fixture
+ex-r1,SEE900000000013,NEW,FIXTURE BESS Mike unknown tech,20,20,40,operating,Brandenburg,52.4,13.1,2026-09-05T00:00:00+00:00,,fixture
+ex-r1,SEE900000000014,NEW,FIXTURE BESS November null island,11,11,22,operating,Bayern,0,0,2026-09-01T00:00:00+00:00,,fixture
+ex-r2,SEE900000000001,CHANGED,FIXTURE BESS Alpha,50,50,120,operating,Brandenburg,52.4,13.1,2026-10-01T00:00:00+00:00,"{""usable_capacity_mwh"": {""new"": ""120"", ""old"": ""100""}}",fixture
+ex-r2,SEE900000000002,ENTERED_SCOPE,FIXTURE BESS Beta exactly 10 MW,25,25,50,operating,Brandenburg,52.4,13.1,2026-10-03T00:00:00+00:00,"{""gross_power_mw"": {""new"": ""25"", ""old"": ""10""}, ""net_power_mw"": {""new"": ""25"", ""old"": ""10""}, ""usable_capacity_mwh"": {""new"": ""50"", ""old"": ""20""}}",fixture
+ex-r2,SEE900000000003,CHANGED,FIXTURE BESS Gamma planned,12.5,12.5,25,operating,Brandenburg,52.4,13.1,2026-10-02T00:00:00+00:00,"{""commissioning_date"": {""new"": ""2026-09-20"", ""old"": null}, ""status"": {""new"": ""operating"", ""old"": ""planned""}, ""status_code"": {""new"": ""35"", ""old"": ""31""}, ""usable_capacity_mwh"": {""new"": ""25"", ""old"": null}}",fixture
+ex-r2,SEE900000000011,LEFT_SCOPE,FIXTURE BESS Kilo no coords,8,8,16,operating,Brandenburg,,,2026-10-04T00:00:00+00:00,"{""gross_power_mw"": {""new"": ""8"", ""old"": ""30""}, ""net_power_mw"": {""new"": ""8"", ""old"": ""30""}, ""usable_capacity_mwh"": {""new"": ""16"", ""old"": ""60""}}",fixture
+ex-r2,SEE900000000016,NEW,FIXTURE BESS Papa new,45,45,90,planned,Brandenburg,52.4,13.1,2026-10-07T00:00:00+00:00,,fixture

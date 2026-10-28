@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-10-28T10:22:18.904520+00:00",
+  "data_origin": "fixture",
+  "run": {
+    "run_id": "ex-r2",
+    "mode": "replay",
+    "status": "success",
+    "data_origin": "fixture",
+    "pages": 1,
+    "records_seen": 8,
+    "records_valid": 7,
+    "records_rejected": 0,
+    "duplicates_exact": 0,
+    "duplicates_superseded": 1,
+    "stale_skipped": 1,
+    "unchanged": 1,
+    "out_of_scope_changes": 0,
+    "deltas": {
+      "CHANGED": 2,
+      "ENTERED_SCOPE": 1,
+      "LEFT_SCOPE": 1,
+      "NEW": 1
+    },
+    "rejections": {
+      "DUPLICATE_SUPERSEDED": 1
+    },
+    "flags": {
+      "LOCATION_MISSING": 1,
+      "DURATION_IMPLAUSIBLE": 1,
+      "TECHNOLOGY_UNKNOWN": 1,
+      "LOCATION_OUT_OF_BOUNDS": 1
+    },
+    "since_filter": null,
+    "watermark_before": "2026-09-05T00:00:00+00:00",
+    "watermark_after": "2026-10-07T00:00:00+00:00",
+    "error": null,
+    "deltas_written": 5
+  },
+  "coverage": {
+    "in_scope_projects": 8,
+    "total_power_mw": "188.5005",
+    "total_capacity_mwh_known": "397.001",
+    "with_capacity_mwh": "100.0%",
+    "with_valid_coordinates": "87.5%",
+    "with_net_power_basis": "87.5%",
+    "technology_verified_battery": "87.5%",
+    "by_status": {
+      "operating": 7,
+      "planned": 1
+    },
+    "by_federal_state": {
+      "Bayern": 1,
+      "Brandenburg": 7
+    },
+    "quality_flags_in_scope": {
+      "LOCATION_OUT_OF_BOUNDS": 1,
+      "POWER_FROM_GROSS": 1,
+      "TECHNOLOGY_UNKNOWN": 1
+    }
+  },
+  "rejections_all_time": {
+    "DUPLICATE_SUPERSEDED": 1,
+    "IMPLAUSIBLE_POWER": 1,
+    "INVALID_MASTR_ID": 1,
+    "MALFORMED_POWER": 1,
+    "MISSING_MASTR_ID": 1
+  },
+  "deltas_all_time": {
+    "CHANGED": 2,
+    "ENTERED_SCOPE": 1,
+    "LEFT_SCOPE": 1,
+    "NEW": 8
+  },
+  "acceptance_checks": {
+    "duplicate_delta_transitions": 0,
+    "in_scope_rows_at_or_below_threshold": 0
+  }
+}

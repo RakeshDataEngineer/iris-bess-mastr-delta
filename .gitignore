@@ -1,0 +1,8 @@
+.env
+config/config.yaml
+data/
+reports/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.sqlite
